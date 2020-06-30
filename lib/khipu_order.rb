@@ -36,7 +36,7 @@ class KhipuOrder
   # @option opts [String] :mandatory_payment_method Si se especifica, el cobro sólo se podrá pagar utilizando ese medio de pago. El valor para el campo de obtiene consultando el endpoint &#39;Consulta medios de pago disponibles&#39;.
 
 
-  def self.options(order, order_url, notify_url, cancel_url)
+  def self.options(order, payment_id, order_url, notify_url, cancel_url)
 
     description = I18n.t('order_description', name: Spree::Store.current.name)
     description = I18n.transliterate(description)
@@ -52,7 +52,7 @@ class KhipuOrder
     payer_name = order.bill_address.firstname + ' ' + order.bill_address.lastname
 
     {
-      transaction_id: order.number, # Identificador propio de la  transacción. Ej: número de factura u orden de compra
+      transaction_id: payment_id, # Identificador propio de la  transacción. Ej: número de factura u orden de compra
       custom: products, # Parámetro para enviar información personalizada de la transacción. Ej: documento XML con el detalle del carro de compra
       body: description, # Descripción del cobro
       return_url: order_url, # La dirección URL a donde enviar al cliente mientras el pago está siendo verificado

@@ -7,8 +7,7 @@ module Spree
       client    = Khipu::PaymentsApi.new
       response  = client.payments_get(notification_token)
 
-      order = Spree::Order.find(response.transaction_id)
-      payment = order.payments.last
+      payment = Spree::Payment.find_by(number: response.transaction_id)
 
       unless payment.completed? || payment.failed?
         case response.status

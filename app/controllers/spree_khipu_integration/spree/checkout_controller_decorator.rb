@@ -14,16 +14,19 @@ module SpreeKhipuIntegration::Spree
       payment_method = Spree::PaymentMethod.find(pm_id)
 
       if payment_method && payment_method.kind_of?(Spree::PaymentMethod::Khipu)
+        payment_number = khipu_create_payment(payment_method)
+        khipu_error and return unless payment_number.present?
+
         api = Khipu::PaymentsApi.new
         response  = api.payments_post(
           KhipuOrder.description,
           KhipuOrder.currency(@order),
           KhipuOrder.amount(@order),
-          KhipuOrder.options(@order, order_url(@order), khipu_notify_url, checkout_url)
+          KhipuOrder.options(@order, payment_number, order_url(@order), khipu_notify_url, checkout_url)
         )
 
         if response
-          redirect_to response.payment_url if payment_success(payment_method)
+          redirect_to response.payment_url
         else
           khipu_error
         end
@@ -33,7 +36,7 @@ module SpreeKhipuIntegration::Spree
       khipu_error(e)
     end
 
-    def payment_success(payment_method)
+    def khipu_create_payment(payment_method)
       payment = @order.payments.build(
         payment_method_id: payment_method.id,
         amount: @order.total,
@@ -50,7 +53,12 @@ module SpreeKhipuIntegration::Spree
         redirect_to checkout_state_path(@order.state) and return
       end
 
-      payment.pend!
+      unless payment.pend!
+        flash[:error] = payment.errors.full_messages.join("\n")
+        redirect_to checkout_state_path(@order.state) and return
+      end
+
+      payment.number
     end
 
     def khipu_error(e = nil)
