@@ -36,7 +36,7 @@ class KhipuOrder
   # @option opts [String] :mandatory_payment_method Si se especifica, el cobro sólo se podrá pagar utilizando ese medio de pago. El valor para el campo de obtiene consultando el endpoint &#39;Consulta medios de pago disponibles&#39;.
 
 
-  def self.options(order, order_url, notify_url)
+  def self.options(order, order_url, notify_url, cancel_url)
 
     description = I18n.t('order_description', name: Spree::Store.current.name)
     description = I18n.transliterate(description)
@@ -56,7 +56,7 @@ class KhipuOrder
       custom: products, # Parámetro para enviar información personalizada de la transacción. Ej: documento XML con el detalle del carro de compra
       body: description, # Descripción del cobro
       return_url: order_url, # La dirección URL a donde enviar al cliente mientras el pago está siendo verificado
-      cancel_url: order_url, # La dirección URL a donde enviar al cliente si decide no hacer hacer la transacción
+      cancel_url: cancel_url, # La dirección URL a donde enviar al cliente si decide no hacer hacer la transacción
       notify_url: notify_url, # La dirección del web-service que utilizará khipu para notificar cuando el pago esté conciliado
       expires_date: (Time.now + 1.days).iso8601, # [DateTime] Fecha de expiración del cobro. Pasada esta fecha el cobro es inválido. Formato ISO-8601. Ej: 2017-03-01T13:00:00Z
       payer_name: payer_name, # Nombre del pagador. Es obligatorio cuando send_email es &#39;true&#39;

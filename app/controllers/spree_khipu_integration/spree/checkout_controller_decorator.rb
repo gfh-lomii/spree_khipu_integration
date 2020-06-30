@@ -19,7 +19,7 @@ module SpreeKhipuIntegration::Spree
           KhipuOrder.description,
           KhipuOrder.currency(@order),
           KhipuOrder.amount(@order),
-          KhipuOrder.options(@order, order_url(@order), khipu_notify_url)
+          KhipuOrder.options(@order, order_url(@order), khipu_notify_url, checkout_url)
         )
 
         if response
