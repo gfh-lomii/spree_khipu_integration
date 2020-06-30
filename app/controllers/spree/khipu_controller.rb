@@ -13,6 +13,7 @@ module Spree
         case response.status
         when 'done'
           payment.complete!
+          payment.order.next
           head :ok
         else
           payment.failure!

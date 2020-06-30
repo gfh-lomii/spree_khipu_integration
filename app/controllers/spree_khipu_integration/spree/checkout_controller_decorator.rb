@@ -37,19 +37,10 @@ module SpreeKhipuIntegration::Spree
     end
 
     def khipu_create_payment(payment_method)
-      payment = @order.payments.build(
-        payment_method_id: payment_method.id,
-        amount: @order.total,
-        state: 'checkout'
-      )
+      payment = @order.payments.build(payment_method_id: payment_method.id, amount: @order.total, state: 'checkout')
 
       unless payment.save
         flash[:error] = payment.errors.full_messages.join("\n")
-        redirect_to checkout_state_path(@order.state) and return
-      end
-
-      unless @order.next
-        flash[:error] = @order.errors.full_messages.join("\n")
         redirect_to checkout_state_path(@order.state) and return
       end
 
