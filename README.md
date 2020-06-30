@@ -12,11 +12,10 @@ gem 'spree_khipu_integration', github: 'chinoxchen/spree_khipu_integration'
 
 And then execute:
 
-    $ bundle
+    bundle
+    bundle exec rails g spree_khipu_integration:install
 
-Or install it yourself as:
 
-    $ gem install spree_khipu_integration
 
 ## Usage
 
