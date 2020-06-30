@@ -52,7 +52,7 @@ class KhipuOrder
     payer_name = order.bill_address.firstname + ' ' + order.bill_address.lastname
 
     {
-      transaction_id: order.id, # Identificador propio de la  transacción. Ej: número de factura u orden de compra
+      transaction_id: order.number, # Identificador propio de la  transacción. Ej: número de factura u orden de compra
       custom: products, # Parámetro para enviar información personalizada de la transacción. Ej: documento XML con el detalle del carro de compra
       body: description, # Descripción del cobro
       return_url: order_url, # La dirección URL a donde enviar al cliente mientras el pago está siendo verificado
