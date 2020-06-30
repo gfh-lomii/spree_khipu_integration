@@ -55,24 +55,12 @@ class KhipuOrder
       transaction_id: order.id, # Identificador propio de la  transacción. Ej: número de factura u orden de compra
       custom: products, # Parámetro para enviar información personalizada de la transacción. Ej: documento XML con el detalle del carro de compra
       body: description, # Descripción del cobro
-      bank_id: nil, # Identificador del banco para usar en el pago
       return_url: order_url, # La dirección URL a donde enviar al cliente mientras el pago está siendo verificado
       cancel_url: order_url, # La dirección URL a donde enviar al cliente si decide no hacer hacer la transacción
-      picture_url: nil, # Una dirección URL de una foto de tu producto o servicio
       notify_url: notify_url, # La dirección del web-service que utilizará khipu para notificar cuando el pago esté conciliado
-      contract_url: nil, # La dirección URL del archivo PDF con el contrato a firmar mediante este pago. El cobrador debe estar habilitado para este servicio y el campo &#39;fixed_payer_personal_identifier&#39; es obgligatorio
-      notify_api_version: nil, # Versión de la API de notifiaciones para recibir avisos por web-service
-      expires_date: Time.now + (24*60*60), # [DateTime] Fecha de expiración del cobro. Pasada esta fecha el cobro es inválido. Formato ISO-8601. Ej: 2017-03-01T13:00:00Z
-      send_email: nil, # [BOOLEAN] Si es &#39;true&#39;, se enviará una solicitud de cobro al correo especificado en &#39;payer_email&#39;
+      expires_date: (Time.now + 1.days).iso8601, # [DateTime] Fecha de expiración del cobro. Pasada esta fecha el cobro es inválido. Formato ISO-8601. Ej: 2017-03-01T13:00:00Z
       payer_name: payer_name, # Nombre del pagador. Es obligatorio cuando send_email es &#39;true&#39;
       payer_email: order.email, # Correo del pagador. Es obligatorio cuando send_email es &#39;true&#39;
-      send_reminders: nil, # [BOOLEAN] Si es &#39;true&#39;, se enviarán recordatorios de cobro.
-      responsible_user_email: nil, # Correo electrónico del responsable de este cobro, debe corresponder a un usuario khipu con permisos para cobrar usando esta cuenta de cobro
-      fixed_payer_personal_identifier: nil, # Identificador personal. Si se especifica, solo podrá ser pagado usando ese identificador
-      integrator_fee: nil, # Comisión para el integrador. Sólo es válido si la cuenta de cobro tiene una cuenta de integrador asociada
-      collect_account_uuid: nil, # [BOOLEAN] Para cuentas de cobro con más cuenta propia. Permite elegir la cuenta donde debe ocurrir la transferencia.
-      confirm_timeout_date: nil, # Fecha de rendición del cobro. Es también la fecha final para poder reembolsar el cobro. Formato ISO-8601. Ej: 2017-03-01T13:00:00Z
-      mandatory_payment_method: nil # Si se especifica, el cobro sólo se podrá pagar utilizando ese medio de pago. El valor para el campo de obtiene consultando el endpoint &#39;Consulta medios de pago disponibles&#39;.
     }
   end
 end
