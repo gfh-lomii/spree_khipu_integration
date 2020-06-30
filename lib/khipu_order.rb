@@ -10,7 +10,7 @@ class KhipuOrder
   end
 
   def self.amount(order)
-    order.total.to_f
+    order.total.to_i
   end
 
   # @option opts [String] :transaction_id Identificador propio de la  transacción. Ej: número de factura u orden de compra
@@ -44,7 +44,7 @@ class KhipuOrder
     products = order.line_items.map do |li|
       {
         name: li.product.name,
-        unit_price: li.price.to_f,
+        unit_price: li.price.to_i,
         quantity: li.quantity
       }
     end
