@@ -26,7 +26,9 @@ module SpreeKhipuIntegration::Spree
         )
 
         if response
-          redirect_to response.payment_url
+          payment_url = :payment_url if payment_method.preferences[:checkout_khipu]
+          payment_url = :webpay_url if payment_method.preferences[:checkout_webpay]
+          redirect_to response.send(payment_url)
         else
           khipu_error
         end

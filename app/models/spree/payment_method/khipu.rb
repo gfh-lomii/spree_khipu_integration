@@ -1,5 +1,9 @@
 module Spree
   class PaymentMethod::Khipu < PaymentMethod
+
+    preference :checkout_khipu, :boolean
+    preference :checkout_webpay, :boolean
+
     def payment_profiles_supported?
       false
     end
