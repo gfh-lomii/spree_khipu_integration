@@ -25,10 +25,10 @@ module SpreeKhipuIntegration::Spree
           KhipuOrder.options(@order, payment_number, khipu_success_url(payment_number), khipu_notify_url, khipu_cancel_url(payment_number))
         )
 
-        puts payment_number
-        puts khipu_success_url(payment_number)
-        puts khipu_notify_url
-        puts khipu_cancel_url(payment_number)
+        logger.info payment_number
+        logger.info khipu_success_url(payment_number)
+        logger.info khipu_notify_url
+        logger.info khipu_cancel_url(payment_number)
 
         if response
           payment_url = :payment_url if payment_method.preferences[:checkout_khipu]
