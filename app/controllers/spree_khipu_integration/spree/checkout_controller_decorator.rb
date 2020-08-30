@@ -32,6 +32,11 @@ module SpreeKhipuIntegration::Spree
         else
           khipu_error
         end
+
+        puts payment_number
+        puts khipu_success_url(payment_number)
+        puts khipu_notify_url
+        puts khipu_cancel_url(payment_number)
       end
 
     rescue StandardError => e
