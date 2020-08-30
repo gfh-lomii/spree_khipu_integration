@@ -40,25 +40,16 @@ class KhipuOrder
 
     description = I18n.t('order_description', name: Spree::Store.current.name)
     description = I18n.transliterate(description)
-
-    products = order.line_items.map do |li|
-      {
-        name: li.product.name,
-        unit_price: li.price.to_i,
-        quantity: li.quantity
-      }
-    end
-
     payer_name = order.bill_address.firstname + ' ' + order.bill_address.lastname
 
     {
       transaction_id: payment_id, # Identificador propio de la  transacción. Ej: número de factura u orden de compra
-      custom: products, # Parámetro para enviar información personalizada de la transacción. Ej: documento XML con el detalle del carro de compra
+      custom: '', # Parámetro para enviar información personalizada de la transacción. Ej: documento XML con el detalle del carro de compra
       body: description, # Descripción del cobro
       return_url: order_url, # La dirección URL a donde enviar al cliente mientras el pago está siendo verificado
       cancel_url: cancel_url, # La dirección URL a donde enviar al cliente si decide no hacer hacer la transacción
       notify_url: notify_url, # La dirección del web-service que utilizará khipu para notificar cuando el pago esté conciliado
-      expires_date: (Time.now + 1.days).iso8601, # [DateTime] Fecha de expiración del cobro. Pasada esta fecha el cobro es inválido. Formato ISO-8601. Ej: 2017-03-01T13:00:00Z
+      expires_date: '', # [DateTime] Fecha de expiración del cobro. Pasada esta fecha el cobro es inválido. Formato ISO-8601. Ej: 2017-03-01T13:00:00Z
       payer_name: payer_name, # Nombre del pagador. Es obligatorio cuando send_email es &#39;true&#39;
       payer_email: order.email, # Correo del pagador. Es obligatorio cuando send_email es &#39;true&#39;
     }

@@ -22,7 +22,7 @@ module SpreeKhipuIntegration::Spree
           KhipuOrder.description,
           KhipuOrder.currency(@order),
           KhipuOrder.amount(@order),
-          KhipuOrder.options(@order, payment_number, order_url(@order), khipu_notify_url, checkout_url)
+          KhipuOrder.options(@order, payment_number, khipu_success_url(payment_number), khipu_notify_url, khipu_cancel_url(payment_number))
         )
 
         if response

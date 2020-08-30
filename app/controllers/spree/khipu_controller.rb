@@ -1,6 +1,26 @@
 module Spree
   class KhipuController < Spree::BaseController
-    protect_from_forgery except: [:notify, :continue]
+    protect_from_forgery except: [:notify]
+
+    def success
+      @payment = Spree::Payment.where(number: params[:payment]).last
+      @khipu_receipt = Spree::KhipuPaymentReceipt.create(payment: @payment)
+
+      @payment.order.next!
+
+      @current_order = nil
+      flash.notice = Spree.t(:order_processed_successfully)
+      flash['order_completed'] = true
+
+      redirect_to completion_route(@payment.order)
+    end
+
+    def cancel
+      @payment = Spree::Payment.where(number: params[:payment]).last
+      @khipu_receipt = Spree::KhipuPaymentReceipt.create(payment: @payment)
+
+      redirect_to checkout_state_path(:payment) and return
+    end
 
     def notify
       notification_token = params["notification_token"]
@@ -12,8 +32,12 @@ module Spree
       unless payment.completed? || payment.failed?
         case response.status
         when 'done'
-          payment.complete!
-          payment.order.next
+          @khipu_receipt = Spree::KhipuPaymentReceipt.where(transaction_id: payment.number).last
+          @khipu_receipt.update(map.select{ |k,v| @khipu_receipt.attributes.keys.include? k })
+          @khipu_receipt.save!
+
+          payment.capture!
+
           head :ok
         else
           payment.failure!
@@ -23,5 +47,6 @@ module Spree
         head :unprocessable_entity
       end
     end
+
   end
 end
