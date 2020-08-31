@@ -36,15 +36,13 @@ module Spree
           @khipu_receipt = Spree::KhipuPaymentReceipt.where(transaction_id: payment.number).last
           @khipu_receipt.update(params.select{ |k,v| @khipu_receipt.attributes.keys.include? k })
           @khipu_receipt.save!
-
-          head :ok
         else
           payment.failure!
-          head :unprocessable_entity
         end
-      else
-        head :unprocessable_entity
       end
+      head :ok
+    rescue
+      head :unprocessable_entity
     end
 
     def completion_route(order, custom_params = nil)
