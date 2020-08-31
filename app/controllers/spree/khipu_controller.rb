@@ -5,7 +5,6 @@ module Spree
     def success
       @payment = Spree::Payment.where(number: params[:payment]).last
       @khipu_receipt = Spree::KhipuPaymentReceipt.create(payment: @payment)
-
       @payment.order.next!
 
       @current_order = nil
@@ -32,11 +31,11 @@ module Spree
       unless payment.completed? || payment.failed?
         case response.status
         when 'done'
-          @khipu_receipt = Spree::KhipuPaymentReceipt.where(transaction_id: payment.number).last
-          @khipu_receipt.update(map.select{ |k,v| @khipu_receipt.attributes.keys.include? k })
-          @khipu_receipt.save!
+          payment.complete!
 
-          payment.capture!
+          @khipu_receipt = Spree::KhipuPaymentReceipt.where(transaction_id: payment.number).last
+          @khipu_receipt.update(params.select{ |k,v| @khipu_receipt.attributes.keys.include? k })
+          @khipu_receipt.save!
 
           head :ok
         else
