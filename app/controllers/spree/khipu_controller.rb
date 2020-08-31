@@ -47,5 +47,8 @@ module Spree
       end
     end
 
+    def completion_route(order, custom_params = nil)
+      spree.order_path(order, custom_params)
+    end
   end
 end
