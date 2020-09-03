@@ -4,9 +4,19 @@ module Spree
 
     def success
       @payment = Spree::Payment.where(number: params[:payment]).last
-      @khipu_receipt = Spree::KhipuPaymentReceipt.create(payment: @payment)
-      @payment.order.next!
 
+      if @payment.order.completed?
+        @current_order = nil
+        redirect_to completion_route(@payment.order)
+      end
+
+      begin
+        @payment.order.next!
+      rescue
+        return
+      end
+
+      @khipu_receipt = Spree::KhipuPaymentReceipt.create(payment: @payment)
       @current_order = nil
       flash.notice = Spree.t(:order_processed_successfully)
       flash['order_completed'] = true

@@ -1,0 +1,8 @@
+Esperando la confirmación del pago
+Loading!!
+
+<script !src="">
+  window.setTimeout(function() {
+    location.href = "/khipu/success/<%= @payment.number %>";
+  }, 5000);
+</script>
