@@ -5,23 +5,15 @@ module Spree
 
     def success
       @payment = Spree::Payment.where(number: params[:payment]).last
+      return unless @payment.order.completed?
 
-      if @payment.order.completed?
-        @current_order = nil
-        redirect_to completion_route(@payment.order)
-      end
-
-      begin
-        @payment.order.next!
-      rescue
-        return
-      end
-
-      @khipu_receipt = Spree::KhipuPaymentReceipt.create(payment: @payment)
       @current_order = nil
-      flash.notice = Spree.t(:order_processed_successfully)
-      flash['order_completed'] = true
+      unless KhipuNotification.find_by(order_id: @payment.order_id, payment_id: @payment.id)
+        flash.notice = Spree.t(:order_processed_successfully)
+        flash['order_completed'] = true
+      end
 
+      KhipuNotification.create(order_id: @payment.order_id, payment_id: @payment.id)
       redirect_to completion_route(@payment.order)
     end
 
@@ -43,10 +35,11 @@ module Spree
         case response.status
         when 'done'
           payment.complete!
+          payment.order.next!
 
           @khipu_receipt = Spree::KhipuPaymentReceipt.where(transaction_id: payment.number).last
           @khipu_receipt.update(params.select { |k, v| @khipu_receipt.attributes.keys.include? k })
-          @khipu_receipt.save!
+          @khipu_receipt.save
         else payment.failure!
         end
       end
