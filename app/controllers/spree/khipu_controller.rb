@@ -35,6 +35,8 @@ module Spree
         case response.status
         when 'done'
           payment.complete!
+          order = payment.order
+          order.skip_stock_validation = true
           payment.order.next!
 
           @khipu_receipt = Spree::KhipuPaymentReceipt.where(transaction_id: payment.number).last
